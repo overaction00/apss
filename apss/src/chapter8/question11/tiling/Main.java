@@ -1,4 +1,4 @@
-package chapter8.question11.example1;
+package chapter8.question11.tiling;
 
 import java.util.Scanner;
 

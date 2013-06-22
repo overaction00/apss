@@ -1,4 +1,4 @@
-package chapter8.question11.example2;
+package chapter8.question11.tripathcnt;
 
 import java.util.Scanner;
 
