@@ -31,5 +31,6 @@ public class Main {
             index = 0;
             T--;
         }
+        sc.close();
 	}
 }
