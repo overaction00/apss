@@ -3,7 +3,6 @@ package chapter10.example2.matchorder;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
@@ -15,8 +14,11 @@ public class Main {
 		private int binarySearchLowerBound(List<Integer> list, int low, int high, int value) {
 			
 			if (low > high) {
-				while(high > 0 && list.get(high) < value) {
-					high--;
+				if (high < 0) {
+					return 0;
+				}
+				while(list.get(high) < value) {
+					high++;
 				}
 				return high;
 			}
@@ -28,24 +30,26 @@ public class Main {
 			} else if (midValue > value) {
 				return binarySearchLowerBound(list, low, mid - 1, value);
 			} else {
-				// midValue < value
 				return binarySearchLowerBound(list, mid + 1, high, value);
 			}
 		}
 		
-		public int order(Integer[] russians, Integer[] koreans) {
+		public int order(int[] russians, int[] koreans) {
 			List<Integer> koreanList = new ArrayList<Integer>();
-			koreanList.addAll(Arrays.asList(koreans));
-			Collections.sort(koreanList, Collections.reverseOrder());
+			for (int korean : koreans) {
+				koreanList.add(korean);
+			}
+			Collections.sort(koreanList);
 			
 			int wins = 0;
 			for (int rus : russians) {
-				if (koreanList.get(0) < rus) {
+				int listSize = koreanList.size();
+				if (koreanList.get(listSize - 1) < rus) {
 					// 최고점수인 사람이 이길 수 없다면 최저점을 내보낸다.
-					koreanList.remove(koreanList.size()-1);
+					koreanList.remove(0);
 				} else {
 					// 최고점수 보다 낮다면 검색을 통해서 동점이나 가장 근접한 선수를 출전시킨다.
-					int player = binarySearchLowerBound(koreanList, 0, koreanList.size() - 1, rus);
+					int player = binarySearchLowerBound(koreanList, 0, listSize - 1, rus);
 					koreanList.remove(player);
 					wins += 1;
 				}
@@ -63,8 +67,8 @@ public class Main {
 			int noPlayer = Integer.parseInt(sc.nextLine());
 			String[] rusScoresStr = sc.nextLine().split(" ");
 			String[] korScoresStr = sc.nextLine().split(" ");
-			Integer[] rusScores = new Integer[noPlayer];
-			Integer[] korScores = new Integer[noPlayer];
+			int[] rusScores = new int[noPlayer];
+			int[] korScores = new int[noPlayer];
 			for (int i = 0; i < noPlayer; i++) {
 				rusScores[i] = Integer.parseInt(rusScoresStr[i]);
 				korScores[i] = Integer.parseInt(korScoresStr[i]);
