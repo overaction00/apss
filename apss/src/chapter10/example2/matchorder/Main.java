@@ -1,41 +1,75 @@
 package chapter10.example2.matchorder;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 	
 	static class MatchOrder {
 		
-		public int order(Integer[] russians, Integer[] koreans) {
-			Arrays.sort(koreans, Collections.reverseOrder());
+		private int binarySearchLowerBound(List<Integer> list, int low, int high, int value) {
 			
-			for (int rus : russians) {
-				// °¡Àå ·¹ÀÌÆÃÀÌ ³ôÀº ÇÑ±¹¼±¼ö°¡ ÀÌ±æ¼ö ¾ø´Ù¸é °¡Àå ·¹ÀÌÆÃÀÌ ³·Àº »ç¶÷À» ¸ÅÄª½ÃÅ²´Ù.
-				
-				// ÇÑ±¹ ¼±¼ö°¡ ÀÌ±æ ¼ö ÀÖ´Ù¸é µ¿ÀÏÇÏ°Å³ª ÇÏ³ªÀ§ÀÇ ¼±¼ö¸¦ Ãâ¼±½ÃÅ²´Ù.
+			if (low > high) {
+				while(high > 0 && list.get(high) < value) {
+					high--;
+				}
+				return high;
 			}
-			return 0;
+			
+			int mid = (low + high) / 2;
+			int midValue = list.get(mid);
+			if (midValue == value) {
+				return mid;
+			} else if (midValue > value) {
+				return binarySearchLowerBound(list, low, mid - 1, value);
+			} else {
+				// midValue < value
+				return binarySearchLowerBound(list, mid + 1, high, value);
+			}
+		}
+		
+		public int order(Integer[] russians, Integer[] koreans) {
+			List<Integer> koreanList = new ArrayList<Integer>();
+			koreanList.addAll(Arrays.asList(koreans));
+			Collections.sort(koreanList, Collections.reverseOrder());
+			
+			int wins = 0;
+			for (int rus : russians) {
+				if (koreanList.get(0) < rus) {
+					// ìµœê³ ì ìˆ˜ì¸ ì‚¬ëžŒì´ ì´ê¸¸ ìˆ˜ ì—†ë‹¤ë©´ ìµœì €ì ì„ ë‚´ë³´ë‚¸ë‹¤.
+					koreanList.remove(koreanList.size()-1);
+				} else {
+					// ìµœê³ ì ìˆ˜ ë³´ë‹¤ ë‚®ë‹¤ë©´ ê²€ìƒ‰ì„ í†µí•´ì„œ ë™ì ì´ë‚˜ ê°€ìž¥ ê·¼ì ‘í•œ ì„ ìˆ˜ë¥¼ ì¶œì „ì‹œí‚¨ë‹¤.
+					int player = binarySearchLowerBound(koreanList, 0, koreanList.size() - 1, rus);
+					koreanList.remove(player);
+					wins += 1;
+				}
+			}
+			return wins;
 		}
 	}
 	
 	
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) throws IOException {
+//		Scanner sc = new Scanner(System.in);
+		Scanner sc = new Scanner(new FileInputStream("/Users/worms/git/apss/apss/src/chapter10/example2/matchorder/input.txt"));
 		int testCase = Integer.parseInt(sc.nextLine());
 		while (testCase-- > 0) {
 			int noPlayer = Integer.parseInt(sc.nextLine());
 			String[] rusScoresStr = sc.nextLine().split(" ");
 			String[] korScoresStr = sc.nextLine().split(" ");
-			int[] rusScores = new int[noPlayer];
-			int[] korScores = new int[noPlayer];
+			Integer[] rusScores = new Integer[noPlayer];
+			Integer[] korScores = new Integer[noPlayer];
 			for (int i = 0; i < noPlayer; i++) {
 				rusScores[i] = Integer.parseInt(rusScoresStr[i]);
 				korScores[i] = Integer.parseInt(korScoresStr[i]);
 			}
-			
-			
+			System.out.println(new MatchOrder().order(rusScores, korScores));
 		}
 		sc.close();
 	}
