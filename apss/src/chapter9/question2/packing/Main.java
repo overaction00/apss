@@ -7,52 +7,52 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-	
+
 	public static final int MAX = 100;
 	public static final int NEED_MAX = 1000;
-	
+
 	private static String[] name = new String[MAX + 1];
 	private static int[] volume = new int[MAX + 1];
 	private static int[] need = new int[MAX + 1];
 	private static int[][] cache = new int[NEED_MAX + 1][MAX + 1];
 	static class Packing {
-		
+
 		private int n;
-		
+
 		public Packing(int n) {
 			this.n = n;
 		}
-		
+
 		public int pack(int capacity, int item) {
 			if (item == n) {
 				return 0;
 			}
-			
+
 			if ( cache[capacity][item] != -1) {
 				return cache[capacity][item];
 			}
-			
+
 			int pick = 0;
 			int nPick = 0;
+
 			// 물건을 가져가는 경우 (pick)
 			if ( capacity >= volume[item] ) {
 				pick = pack(capacity - volume[item], item + 1) + need[item];
 			}
-			
 			// 물건을 가져가지 않는 경우 (nPick)
 			nPick = pack(capacity, item + 1);
-			
+
 			// 두가지 경우에 대해서 더 만족도가 큰 경우를 판단
 			int max = Math.max(pick, nPick);
 			cache[capacity][item] = max;
 			return max;
 		}
-		
+
 		public void reconstruct(int capacity, int item, List<String> picked) {
 			if (item == n) {
 				return;
 			}
-			
+
 			if (pack(capacity, item) == pack(capacity, item + 1)) {
 				reconstruct(capacity, item + 1, picked);
 			} else {
@@ -61,7 +61,7 @@ public class Main {
 			}
 		}
 	}
-	
+
 	public static void clearVariables() {
 		for (int i = 0; i < MAX + 1; i++) {
 			name[i] = "";
@@ -92,13 +92,14 @@ public class Main {
 			}
 			Packing p = new Packing(noItems);
 			int maxSatisfied = p.pack(capacity, 0);
+			System.out.println(maxSatisfied);
 			List<String> picked = new ArrayList<String>();
 			p.reconstruct(capacity, 0, picked);
 			System.out.println(maxSatisfied + " " + picked.size());
 			for (String item : picked) {
 				System.out.println(item);
 			}
-		
+
 		}
 		sc.close();
 	}
