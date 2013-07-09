@@ -34,6 +34,7 @@ public class Main {
 			if ((o instanceof Pair) == false) {
 				return false;
 			}
+			@SuppressWarnings("unchecked")
 			final Pair<First, Second> pair = (Pair<First, Second>)o;
 			if (this.first.equals(pair.first)) {
 				return this.second.equals(pair.second);
