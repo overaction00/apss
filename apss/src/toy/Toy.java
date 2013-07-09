@@ -1,5 +1,7 @@
 package toy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 
 public class Toy {
@@ -9,5 +11,8 @@ public class Toy {
 		a.add("5");
 		a.add("3");
 		System.out.println(a.size());
+		List<String> b = new ArrayList<String>();
+		b.add("bbb");
+		System.out.println(b.toString());
 	}
 }
